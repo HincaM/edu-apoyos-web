@@ -1,1 +1,39 @@
-<p>register.page works!</p>
+<main class="login-page d-flex align-items-center justify-content-center min-vh-100 p-3">
+  <mat-card class="login-card w-100 p-4" appearance="outlined">
+    <div class="d-flex flex-column align-items-center text-center mb-4">
+      <div class="login-logo d-flex align-items-center justify-content-center rounded-circle mb-3" aria-hidden="true">
+        <mat-icon>school</mat-icon>
+      </div>
+      <h1 class="h4 fw-semibold mb-1">Crear cuenta</h1>
+    </div>
+
+    <div class="d-flex flex-column gap-3">
+      <edu-input label="Documento" type="text" icon="badge" placeholder="Número de documento"
+        autocomplete="username" [field]="registerForm.userId" />
+
+      <edu-input label="Nombre completo" type="text" icon="person" placeholder="Nombre y apellido"
+        autocomplete="name" [field]="registerForm.fullName" />
+
+      <edu-input label="Correo electrónico" type="email" icon="mail" placeholder="nombre@correo.com"
+        autocomplete="email" [field]="registerForm.email" />
+
+      <edu-input label="Contraseña" [type]="hidePassword() ? 'password' : 'text'" icon="lock" placeholder="••••••••"
+        autocomplete="new-password" [field]="registerForm.password">
+      </edu-input>
+
+      <mat-radio-group class="d-flex gap-4" [value]="registerForm.role().value()"
+        (change)="registerForm.role().value.set($event.value)">
+        <mat-radio-button [value]="Role.Student">Estudiante</mat-radio-button>
+        <mat-radio-button [value]="Role.Advisor">Asesor</mat-radio-button>
+      </mat-radio-group>
+
+      <edu-flat-button class="login-submit" type="button" [disabled]="submitting()" (clicked)="register()">
+        {{ submitting() ? 'Creando cuenta…' : 'Crear cuenta' }}
+      </edu-flat-button>
+
+      <p class="text-center text-body-secondary small mb-0">
+        ¿Ya tienes cuenta? <a class="link-primary fw-medium text-decoration-none" routerLink="/login">Inicia sesión</a>
+      </p>
+    </div>
+  </mat-card>
+</main>

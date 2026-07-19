@@ -1,0 +1,23 @@
+<div class="edu-input">
+  @if (label()) {
+    <label class="edu-input-label">{{ label() }}</label>
+  }
+  <mat-form-field class="edu-input-field" appearance="outline" subscriptSizing="dynamic">
+    @if (icon()) {
+      <mat-icon matPrefix aria-hidden="true">{{ icon() }}</mat-icon>
+    }
+    <ng-content select="[suffix]" />
+    <input
+      matInput
+      [formField]="field()"
+      [type]="type()"
+      [placeholder]="placeholder()"
+      [autocomplete]="autocomplete()"
+    />
+    @if (field()().touched() && field()().errors().length > 0) {
+      <mat-error>{{ field()().errors()[0].message }}</mat-error>
+    } @else if (hint()) {
+      <mat-hint>{{ hint() }}</mat-hint>
+    }
+  </mat-form-field>
+</div>

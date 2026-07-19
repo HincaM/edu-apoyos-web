@@ -1,0 +1,20 @@
+.login-page {
+  background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 60%, #eef6ff 100%);
+}
+
+.login-card {
+  max-width: 26rem;
+  border-radius: 1rem !important;
+  box-shadow: 0 1rem 2.5rem rgba(15, 23, 42, 0.08) !important;
+}
+
+.login-logo {
+  width: 3rem;
+  height: 3rem;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.login-submit {
+  height: 2.5rem;
+}
