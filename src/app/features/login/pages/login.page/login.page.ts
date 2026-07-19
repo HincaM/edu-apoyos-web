@@ -1,13 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { email, form, minLength, required, submit } from '@angular/forms/signals';
 import { firstValueFrom } from 'rxjs';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { EduFlatButton } from '../../../../shared/components/button/edu-flat-button';
 import { EduInput } from '../../../../shared/components/input/edu-input';
 import { LoginUseCase } from '../../core/application/use-cases/login.use-case';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { ErrorHelperService } from '../../../../core/services/error-helper.service';
+import { AuthTokenService } from '../../../../core/services/auth-token.service';
 
 interface LoginModel {
   email: string;
@@ -29,6 +32,10 @@ interface LoginModel {
 })
 export class LoginPage {
   private readonly loginUseCase = inject(LoginUseCase);
+  private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly errorHelper = inject(ErrorHelperService);
+  private readonly authToken = inject(AuthTokenService);
 
   protected readonly hidePassword = signal(true);
   protected readonly submitting = signal(false);
@@ -50,11 +57,13 @@ export class LoginPage {
     submit(this.loginForm, async () => {
       this.submitting.set(true);
       try {
-        await firstValueFrom(
-          this.loginUseCase.execute({
-            userId: this.model().email,
-            password: this.model().password,
-          }),
+        const token = await firstValueFrom(this.loginUseCase.execute(this.model()));
+        this.authToken.setToken(token);
+        this.toast.success('Sesión iniciada correctamente');
+        this.router.navigateByUrl('/requests');
+      } catch (err) {
+        this.toast.error(
+          this.errorHelper.extractErrorMessage(err, 'Usuario y/o contraseña incorrectos'),
         );
       } finally {
         this.submitting.set(false);

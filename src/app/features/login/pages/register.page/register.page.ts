@@ -10,6 +10,8 @@ import { EduFlatButton } from '../../../../shared/components/button/edu-flat-but
 import { EduInput } from '../../../../shared/components/input/edu-input';
 import { Role } from '../../core/domain/services/auth.service';
 import { RegisterUseCase } from '../../core/application/use-cases/register.use-case';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { ErrorHelperService } from '../../../../core/services/error-helper.service';
 
 interface RegisterModel {
   userId: string;
@@ -36,6 +38,8 @@ interface RegisterModel {
 export class RegisterPage {
   private readonly registerUseCase = inject(RegisterUseCase);
   private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
+  private readonly errorHelper = inject(ErrorHelperService);
 
   protected readonly Role = Role;
   protected readonly hidePassword = signal(true);
@@ -69,7 +73,10 @@ export class RegisterPage {
       this.submitting.set(true);
       try {
         await firstValueFrom(this.registerUseCase.execute(this.model()));
+        this.toast.success('Cuenta creada correctamente');
         this.router.navigateByUrl('/login');
+      } catch (err) {
+        this.toast.error(this.errorHelper.extractErrorMessage(err, 'No se pudo crear la cuenta'));
       } finally {
         this.submitting.set(false);
       }
