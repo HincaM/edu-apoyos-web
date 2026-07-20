@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 
 export enum Status {
-  Pending = 1,
-  UnderReview = 2,
-  Approved = 3,
-  Rejected = 4,
+  Pending,
+  UnderReview,
+  Approved,
+  Rejected,
 }
 
 export enum TypeSupport {
@@ -50,15 +50,23 @@ export interface GetStudentRequestsQuery {
   studentId: number;
   currentPage: number;
   pageSize: number;
+  status?: Status;
+  type?: TypeSupport;
 }
 
 export interface CreateRequestCommand {
   studentId: number;
-  userId: string;
   typeSupport: TypeSupport;
   requestedAmount: number;
   description: string;
   advisorId: string;
+}
+
+export interface ChangeStatusRequestCommand {
+  requestSupportId: number;
+  currentStatus: Status;
+  status: Status;
+  observation: string;
 }
 
 @Injectable()
@@ -67,5 +75,7 @@ export abstract class RequestsSupportsService {
   abstract getStudentRequests(
     query: GetStudentRequestsQuery,
   ): Observable<PaginatedList<RequestSupportDto>>;
+  abstract getRequestById(id: number): Observable<RequestSupportDto>;
   abstract createRequest(command: CreateRequestCommand): Observable<number>;
+  abstract changeStatus(command: ChangeStatusRequestCommand): Observable<boolean>;
 }

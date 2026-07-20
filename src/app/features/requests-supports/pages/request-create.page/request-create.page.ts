@@ -13,6 +13,7 @@ import { TypeSupport } from '../../core/domain/services/requests-supports.servic
 import { GetStudentsUseCase } from '../../../students/core/application/use-cases/get-students.use-case';
 import { GetAdvisorsUseCase } from '../../../users/core/application/use-cases/get-advisors.use-case';
 import type { AdvisorDto } from '../../../users/core/domain/services/users.service';
+import type { StudentDto } from '../../../students/core/domain/services/students.service';
 import type { PaginatedList } from '@shared/models/paginated-list';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { ErrorHelperService } from '../../../../core/services/error-helper.service';
@@ -83,6 +84,9 @@ export class RequestCreatePage implements OnInit {
 
   ngOnInit(): void {
     if (this.isStudent) {
+      const claimStudentId = Number(this.authToken.getStudentId());
+      this.studentId.set(Number.isNaN(claimStudentId) ? null : claimStudentId);
+    } else {
       const claimNameId = Number(this.authToken.getNameId());
       this.advisorId.set(Number.isNaN(claimNameId) ? null : claimNameId);
     }
@@ -99,7 +103,6 @@ export class RequestCreatePage implements OnInit {
     firstValueFrom(
       this.createRequestUseCase.execute({
         studentId: this.studentId()!,
-        userId: '',
         typeSupport: this.typeSupport()!,
         requestedAmount: Number(this.requestedAmount()),
         description: this.description(),
@@ -122,22 +125,26 @@ export class RequestCreatePage implements OnInit {
     this.loadingOptions.set(true);
     try {
       const [students, advisors] = await Promise.all([
-        firstValueFrom(
-          this.getStudentsUseCase.execute({ currentPage: 1, pageSize: STUDENTS_PAGE_SIZE }),
-        ),
         this.isStudent
-          ? Promise.resolve<PaginatedList<AdvisorDto> | null>(null)
+          ? Promise.resolve<PaginatedList<StudentDto> | null>(null)
           : firstValueFrom(
-              this.getAdvisorsUseCase.execute({ currentPage: 1, pageSize: ADVISORS_PAGE_SIZE }),
+              this.getStudentsUseCase.execute({ currentPage: 1, pageSize: STUDENTS_PAGE_SIZE }),
             ),
+        this.isStudent
+          ? firstValueFrom(
+              this.getAdvisorsUseCase.execute({ currentPage: 1, pageSize: ADVISORS_PAGE_SIZE }),
+            )
+          : Promise.resolve<PaginatedList<AdvisorDto> | null>(null),
       ]);
 
-      this.studentOptions.set(
-        students.results.map((student) => ({
-          value: student.id,
-          label: student.userName ?? student.documentNumber,
-        })),
-      );
+      if (students) {
+        this.studentOptions.set(
+          students.results.map((student) => ({
+            value: student.id,
+            label: student.userName ?? student.documentNumber,
+          })),
+        );
+      }
       if (advisors) {
         this.advisorOptions.set(
           advisors.results.map((advisor) => ({ value: advisor.id, label: advisor.fullName })),

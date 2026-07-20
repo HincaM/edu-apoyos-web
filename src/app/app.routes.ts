@@ -25,48 +25,55 @@ export const routes: Routes = [
       import('./features/login/pages/register.page/register.page').then((m) => m.RegisterPage),
   },
   {
-    path: 'requests',
-    canActivate: [authGuard],
-    data: { roles: [Role.Advisor, Role.Student] },
-    providers: [...REQUESTS_SUPPORTS_PROVIDERS],
+    path: '',
     loadComponent: () =>
-      import('./features/requests-supports/pages/requests.page/requests.page').then(
-        (m) => m.RequestsPage,
-      ),
-  },
-  {
-    path: 'requests/create',
-    canActivate: [authGuard],
-    data: { roles: [Role.Advisor, Role.Student] },
-    providers: [
-      ...REQUESTS_SUPPORTS_PROVIDERS,
-      ...ACADEMIC_PROGRAMS_PROVIDERS,
-      ...USERS_PROVIDERS,
-      ...STUDENTS_PROVIDERS,
+      import('./shared/layouts/authenticated.layout').then((m) => m.AuthenticatedLayout),
+    children: [
+      {
+        path: 'requests',
+        canActivate: [authGuard],
+        data: { roles: [Role.Advisor, Role.Student] },
+        providers: [...REQUESTS_SUPPORTS_PROVIDERS],
+        loadComponent: () =>
+          import('./features/requests-supports/pages/requests.page/requests.page').then(
+            (m) => m.RequestsPage,
+          ),
+      },
+      {
+        path: 'requests/create',
+        canActivate: [authGuard],
+        data: { roles: [Role.Advisor, Role.Student] },
+        providers: [
+          ...REQUESTS_SUPPORTS_PROVIDERS,
+          ...ACADEMIC_PROGRAMS_PROVIDERS,
+          ...USERS_PROVIDERS,
+          ...STUDENTS_PROVIDERS,
+        ],
+        loadComponent: () =>
+          import(
+            './features/requests-supports/pages/request-create.page/request-create.page'
+          ).then((m) => m.RequestCreatePage),
+      },
+      {
+        path: 'requests/:id',
+        canActivate: [authGuard],
+        data: { roles: [Role.Advisor, Role.Student] },
+        providers: [...REQUESTS_SUPPORTS_PROVIDERS],
+        loadComponent: () =>
+          import(
+            './features/requests-supports/pages/request-detail.page/request-detail.page'
+          ).then((m) => m.RequestDetailPage),
+      },
+      {
+        path: 'students',
+        canActivate: [authGuard],
+        data: { roles: [Role.Advisor] },
+        providers: [...STUDENTS_PROVIDERS],
+        loadComponent: () =>
+          import('./features/students/pages/students.page/students.page').then(
+            (m) => m.StudentsPage,
+          ),
+      },
     ],
-    loadComponent: () =>
-      import('./features/requests-supports/pages/request-create.page/request-create.page').then(
-        (m) => m.RequestCreatePage,
-      ),
-  },
-  {
-    path: 'requests/:id',
-    canActivate: [authGuard],
-    data: { roles: [Role.Advisor, Role.Student] },
-    providers: [...REQUESTS_SUPPORTS_PROVIDERS],
-    loadComponent: () =>
-      import('./features/requests-supports/pages/request-detail.page/request-detail.page').then(
-        (m) => m.RequestDetailPage,
-      ),
-  },
-  {
-    path: 'students',
-    canActivate: [authGuard],
-    data: { roles: [Role.Advisor] },
-    providers: [...STUDENTS_PROVIDERS],
-    loadComponent: () =>
-      import('./features/students/pages/students.page/students.page').then(
-        (m) => m.StudentsPage,
-      ),
   },
 ];

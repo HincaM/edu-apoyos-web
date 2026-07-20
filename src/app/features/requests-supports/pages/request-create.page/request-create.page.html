@@ -8,14 +8,16 @@
     </div>
 
     <div class="d-flex flex-column gap-3">
-      <edu-select
-        label="Estudiante"
-        placeholder="Selecciona un estudiante"
-        [options]="studentOptions()"
-        [value]="studentId()"
-        (valueChange)="studentId.set($event)"
-        [errorMessage]="touched() && studentId() === null ? 'Selecciona un estudiante' : null"
-      />
+      @if (!isStudent) {
+        <edu-select
+          label="Estudiante"
+          placeholder="Selecciona un estudiante"
+          [options]="studentOptions()"
+          [value]="studentId()"
+          (valueChange)="studentId.set($event)"
+          [errorMessage]="touched() && studentId() === null ? 'Selecciona un estudiante' : null"
+        />
+      }
 
       <edu-select
         label="Tipo de apoyo"

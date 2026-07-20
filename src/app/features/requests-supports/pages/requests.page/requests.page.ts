@@ -2,16 +2,24 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { EduFlatButton } from '../../../../shared/components/button/edu-flat-button';
 import { EduSelect, EduSelectOption } from '../../../../shared/components/select/edu-select';
+import {
+  EduChangeStatusDialog,
+  EduChangeStatusDialogResult,
+} from '../../../../shared/components/change-status-dialog/edu-change-status-dialog';
 import { GetRequestsUseCase } from '../../core/application/use-cases/get-requests.use-case';
 import { GetStudentRequestsUseCase } from '../../core/application/use-cases/get-student-requests.use-case';
+import { ChangeStatusRequestUseCase } from '../../core/application/use-cases/change-status-request.use-case';
 import {
   RequestSupportDto,
   Status,
@@ -29,12 +37,14 @@ const DEFAULT_PAGE_SIZE = 10;
   imports: [
     CurrencyPipe,
     DatePipe,
+    MatButtonModule,
     MatCardModule,
     MatChipsModule,
     MatIconModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatTableModule,
+    MatTooltipModule,
     EduFlatButton,
     EduSelect,
   ],
@@ -44,10 +54,12 @@ const DEFAULT_PAGE_SIZE = 10;
 export class RequestsPage implements OnInit {
   private readonly getRequestsUseCase = inject(GetRequestsUseCase);
   private readonly getStudentRequestsUseCase = inject(GetStudentRequestsUseCase);
+  private readonly changeStatusRequestUseCase = inject(ChangeStatusRequestUseCase);
   private readonly toast = inject(ToastService);
   private readonly errorHelper = inject(ErrorHelperService);
   private readonly router = inject(Router);
   private readonly authToken = inject(AuthTokenService);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly isStudent = this.authToken.getRole() === ROLE_CLAIM_VALUES[Role.Student];
 
@@ -71,6 +83,7 @@ export class RequestsPage implements OnInit {
     'requestedAmount',
     'statusDescription',
     'applicationDate',
+    'actions',
   ];
 
   protected readonly loading = signal(false);
@@ -87,6 +100,44 @@ export class RequestsPage implements OnInit {
 
   protected goToCreate(): void {
     this.router.navigateByUrl('/requests/create');
+  }
+
+  protected goToDetail(id: number): void {
+    this.router.navigateByUrl(`/requests/${id}`);
+  }
+
+  protected openChangeStatus(request: RequestSupportDto): void {
+    const dialogRef = this.dialog.open(EduChangeStatusDialog, {
+      data: { currentStatus: request.status, statusOptions: this.statusOptions },
+      width: '28rem',
+    });
+
+    dialogRef.afterClosed().subscribe((result?: EduChangeStatusDialogResult) => {
+      if (result) {
+        this.changeStatus(request, result.status, result.observation);
+      }
+    });
+  }
+
+  private async changeStatus(
+    request: RequestSupportDto,
+    status: Status,
+    observation: string,
+  ): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.changeStatusRequestUseCase.execute({
+          requestSupportId: request.id,
+          currentStatus: request.status,
+          status,
+          observation,
+        }),
+      );
+      this.toast.success('Estado actualizado correctamente');
+      this.load();
+    } catch (err) {
+      this.toast.error(this.errorHelper.extractErrorMessage(err, 'No se pudo actualizar el estado'));
+    }
   }
 
   protected onPageChange(event: PageEvent): void {
@@ -121,13 +172,14 @@ export class RequestsPage implements OnInit {
   private async load(): Promise<void> {
     this.loading.set(true);
     try {
-      debugger
       const page = this.isStudent
         ? await firstValueFrom(
             this.getStudentRequestsUseCase.execute({
               studentId: Number(this.authToken.getStudentId()),
               currentPage: this.currentPage(),
               pageSize: this.pageSize(),
+              status: this.statusFilter() ?? undefined,
+              type: this.typeFilter() ?? undefined,
             }),
           )
         : await firstValueFrom(

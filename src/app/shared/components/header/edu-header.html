@@ -1,0 +1,10 @@
+<mat-toolbar class="edu-header d-flex align-items-center justify-content-between">
+  <a class="edu-header-brand d-flex align-items-center gap-2 text-decoration-none" routerLink="/requests">
+    <mat-icon aria-hidden="true">school</mat-icon>
+    <span class="fw-semibold">EduApoyos</span>
+  </a>
+
+  <edu-flat-button color="warn" ariaLabel="Cerrar sesión" (clicked)="logout()">
+    <mat-icon aria-hidden="true">logout</mat-icon>
+  </edu-flat-button>
+</mat-toolbar>

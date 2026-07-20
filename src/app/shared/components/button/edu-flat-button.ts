@@ -6,7 +6,14 @@ import type { ThemePalette } from '@angular/material/core';
   selector: 'edu-flat-button',
   imports: [MatButtonModule],
   template: `
-    <button mat-flat-button [color]="color()" [type]="type()" [disabled]="disabled()" (click)="clicked.emit()">
+    <button
+      mat-flat-button
+      [color]="color()"
+      [type]="type()"
+      [disabled]="disabled()"
+      [attr.aria-label]="ariaLabel()"
+      (click)="clicked.emit()"
+    >
       <ng-content />
     </button>
   `,
@@ -16,5 +23,6 @@ export class EduFlatButton {
   readonly color = input<ThemePalette>('primary');
   readonly type = input<'button' | 'submit'>('button');
   readonly disabled = input(false);
+  readonly ariaLabel = input<string | null>(null);
   readonly clicked = output<void>();
 }

@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Cambiar estado</h2>
+
+<mat-dialog-content class="d-flex flex-column gap-3">
+  <edu-select
+    label="Nuevo estado"
+    placeholder="Selecciona un estado"
+    [options]="statusOptions"
+    [value]="status()"
+    (valueChange)="status.set($event)"
+    [errorMessage]="touched() && status() === null ? 'Selecciona un estado' : null"
+  />
+
+  <div class="edu-input">
+    <label class="edu-input-label">Observación</label>
+    <mat-form-field class="edu-input-field" appearance="outline" subscriptSizing="dynamic">
+      <textarea
+        matInput
+        rows="3"
+        placeholder="Describe el motivo del cambio de estado"
+        [value]="observation()"
+        (input)="observation.set($any($event.target).value)"
+      ></textarea>
+    </mat-form-field>
+    @if (touched() && !observation().trim()) {
+      <p class="field-error mt-1 mb-0">La observación es obligatoria</p>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancelar</button>
+  <button mat-flat-button color="primary" type="button" (click)="confirm()">Confirmar</button>
+</mat-dialog-actions>
