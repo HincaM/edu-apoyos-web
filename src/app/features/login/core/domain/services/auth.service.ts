@@ -11,8 +11,22 @@ export enum Role {
   Student = 2,
 }
 
+export const ROLE_CLAIM_VALUES: Record<Role, string> = {
+  [Role.Advisor]: 'Asesor',
+  [Role.Student]: 'Estudiante',
+};
+
+export enum DocumentType {
+  IdentityCard = 1,
+  Cedula = 2,
+  ForeignCedula = 3,
+}
+
 export interface RegisterRequest {
-  userId: string;
+  documentType: DocumentType;
+  documentNumber: string;
+  academicProgramId: number;
+  semester: number;
   fullName: string;
   email: string;
   password: string;

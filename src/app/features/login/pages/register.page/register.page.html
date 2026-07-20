@@ -8,8 +8,69 @@
     </div>
 
     <div class="d-flex flex-column gap-3">
-      <edu-input label="Documento" type="text" icon="badge" placeholder="Número de documento"
-        autocomplete="username" [field]="registerForm.userId" />
+      <mat-radio-group class="d-flex gap-4" [value]="registerForm.role().value()"
+        (change)="registerForm.role().value.set($event.value)">
+        <mat-radio-button [value]="Role.Student">Estudiante</mat-radio-button>
+        <mat-radio-button [value]="Role.Advisor">Asesor</mat-radio-button>
+      </mat-radio-group>
+
+      @if (isStudent()) {
+        <edu-select
+          label="Tipo de documento"
+          placeholder="Selecciona un tipo"
+          [options]="documentTypeOptions"
+          [value]="documentType()"
+          (valueChange)="documentType.set($event)"
+        />
+        @if (studentFieldsTouched() && documentType() === null) {
+          <p class="field-error mt-n2 mb-0">Selecciona un tipo de documento</p>
+        }
+
+        <div class="edu-input">
+          <label class="edu-input-label">Número de documento</label>
+          <mat-form-field class="edu-input-field" appearance="outline" subscriptSizing="dynamic">
+            <input
+              matInput
+              type="text"
+              placeholder="Documento"
+              [value]="documentNumber()"
+              (input)="documentNumber.set($any($event.target).value)"
+            />
+          </mat-form-field>
+          @if (studentFieldsTouched() && !documentNumber().trim()) {
+            <p class="field-error mt-1 mb-0">El número de documento es obligatorio</p>
+          }
+        </div>
+
+        <edu-select
+          label="Programa académico"
+          placeholder="Selecciona un programa"
+          [options]="academicProgramOptions()"
+          [value]="academicProgramId()"
+          (valueChange)="academicProgramId.set($event)"
+        />
+        @if (studentFieldsTouched() && academicProgramId() === null) {
+          <p class="field-error mt-n2 mb-0">Selecciona un programa académico</p>
+        }
+
+        <div class="edu-input">
+          <label class="edu-input-label">Semestre</label>
+          <mat-form-field class="edu-input-field" appearance="outline" subscriptSizing="dynamic">
+            <input
+              matInput
+              type="number"
+              min="1"
+              step="1"
+              placeholder="Semestre"
+              [value]="semester()"
+              (input)="semester.set($any($event.target).value)"
+            />
+          </mat-form-field>
+          @if (studentFieldsTouched() && !semesterValid()) {
+            <p class="field-error mt-1 mb-0">Ingresa un semestre válido</p>
+          }
+        </div>
+      }
 
       <edu-input label="Nombre completo" type="text" icon="person" placeholder="Nombre y apellido"
         autocomplete="name" [field]="registerForm.fullName" />
@@ -20,12 +81,6 @@
       <edu-input label="Contraseña" [type]="hidePassword() ? 'password' : 'text'" icon="lock" placeholder="••••••••"
         autocomplete="new-password" [field]="registerForm.password">
       </edu-input>
-
-      <mat-radio-group class="d-flex gap-4" [value]="registerForm.role().value()"
-        (change)="registerForm.role().value.set($event.value)">
-        <mat-radio-button [value]="Role.Student">Estudiante</mat-radio-button>
-        <mat-radio-button [value]="Role.Advisor">Asesor</mat-radio-button>
-      </mat-radio-group>
 
       <edu-flat-button class="login-submit" type="button" [disabled]="submitting()" (clicked)="register()">
         {{ submitting() ? 'Creando cuenta…' : 'Crear cuenta' }}

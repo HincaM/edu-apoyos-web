@@ -60,7 +60,7 @@ export class LoginPage {
         const token = await firstValueFrom(this.loginUseCase.execute(this.model()));
         this.authToken.setToken(token);
         this.toast.success('Sesión iniciada correctamente');
-        this.router.navigateByUrl('/requests');
+        this.router.navigate(['/requests']);
       } catch (err) {
         this.toast.error(
           this.errorHelper.extractErrorMessage(err, 'Usuario y/o contraseña incorrectos'),

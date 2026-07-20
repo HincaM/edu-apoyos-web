@@ -1,0 +1,17 @@
+<div class="edu-select">
+  @if (label()) {
+    <label class="edu-select-label">{{ label() }}</label>
+  }
+  <mat-form-field class="edu-select-field" appearance="outline" subscriptSizing="dynamic">
+    <mat-select
+      [value]="value()"
+      [placeholder]="placeholder()"
+      (selectionChange)="valueChange.emit($event.value)"
+    >
+      <mat-option [value]="null">{{ placeholder() }}</mat-option>
+      @for (option of options(); track option.label) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
