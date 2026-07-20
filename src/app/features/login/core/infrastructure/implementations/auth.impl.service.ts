@@ -8,7 +8,7 @@ export class AuthImplService implements AuthService {
   private readonly http = inject(HttpClient);
 
   login(request: LoginRequest): Observable<string> {
-    return this.http.post('auth/login', request, { responseType: 'text' });
+    return this.http.post<string>('auth/login', request);
   }
 
   register(request: RegisterRequest): Observable<boolean> {

@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { EduFlatButton } from '../../../../shared/components/button/edu-flat-button';
+import { EduNumericInput } from '../../../../shared/components/numeric-input/edu-numeric-input';
 import { EduSelect, EduSelectOption } from '../../../../shared/components/select/edu-select';
 import { CreateRequestUseCase } from '../../core/application/use-cases/create-request.use-case';
 import { TypeSupport } from '../../core/domain/services/requests-supports.service';
@@ -30,6 +31,7 @@ const ADVISORS_PAGE_SIZE = 100;
     MatIconModule,
     MatInputModule,
     EduSelect,
+    EduNumericInput,
     EduFlatButton,
   ],
   templateUrl: './request-create.page.html',

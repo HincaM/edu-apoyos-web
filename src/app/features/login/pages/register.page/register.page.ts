@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { EduFlatButton } from '../../../../shared/components/button/edu-flat-button';
 import { EduInput } from '../../../../shared/components/input/edu-input';
+import { EduNumericInput } from '../../../../shared/components/numeric-input/edu-numeric-input';
 import { EduSelect, EduSelectOption } from '../../../../shared/components/select/edu-select';
 import { DocumentType, Role } from '../../core/domain/services/auth.service';
 import { RegisterUseCase } from '../../core/application/use-cases/register.use-case';
@@ -35,6 +36,7 @@ interface RegisterModel {
     MatInputModule,
     MatRadioModule,
     EduInput,
+    EduNumericInput,
     EduSelect,
     EduFlatButton,
   ],

@@ -2,11 +2,11 @@
   display: block;
 }
 
-.edu-select {
+.edu-input {
   width: 100%;
 }
 
-.edu-select-label {
+.edu-input-label {
   display: block;
   margin-bottom: 0.375rem;
   font-size: 0.875rem;
@@ -14,7 +14,7 @@
   color: #0f172a;
 }
 
-.edu-select-field {
+.edu-input-field {
   width: 100%;
 
   ::ng-deep .mat-mdc-form-field-flex {
@@ -55,25 +55,49 @@
     border-radius: 0.375rem;
   }
 
-  ::ng-deep .mat-mdc-form-field-focus-overlay {
+  ::ng-deep .mat-mdc-form-field-focus-overlay,
+  ::ng-deep .mdc-line-ripple,
+  ::ng-deep .mat-mdc-form-field-hover-overlay {
     display: none !important;
     background-color: transparent !important;
     opacity: 0 !important;
   }
 
-  ::ng-deep .mat-mdc-select-value,
-  ::ng-deep .mat-mdc-select-placeholder {
+  ::ng-deep .mat-mdc-form-field-icon-prefix mat-icon {
+    color: #64748b;
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+    height: 1.1rem;
+    width: 1.1rem;
+  }
+
+  ::ng-deep input.mat-mdc-input-element {
     font-size: 0.875rem;
     color: #0f172a;
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus {
+      -webkit-text-fill-color: #0f172a;
+      -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+      transition: background-color 9999s ease-in-out 0s;
+    }
   }
 
   ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-    display: none;
+    margin-top: 0.375rem;
+  }
+
+  ::ng-deep .mat-mdc-form-field-error {
+    font-size: 0.8rem;
   }
 }
 
 .field-error {
   font-size: 0.8rem;
   color: #dc2626;
-  margin-top: -0.5rem;
 }

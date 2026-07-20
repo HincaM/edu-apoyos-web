@@ -6,17 +6,20 @@ import { STUDENTS_PROVIDERS } from '@features/students/students.providers';
 import { ACADEMIC_PROGRAMS_PROVIDERS } from '@features/academic-programs/academic-programs.providers';
 import { USERS_PROVIDERS } from '@features/users/users.providers';
 import { authGuard } from '@core/guards/auth.guard';
+import { guestGuard } from '@core/guards/guest.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   {
     path: 'login',
+    canActivate: [guestGuard],
     providers: [...LOGIN_PROVIDERS],
     loadComponent: () =>
       import('./features/login/pages/login.page/login.page').then((m) => m.LoginPage),
   },
   {
     path: 'register',
+    canActivate: [guestGuard],
     providers: [...LOGIN_PROVIDERS, ...ACADEMIC_PROGRAMS_PROVIDERS],
     loadComponent: () =>
       import('./features/login/pages/register.page/register.page').then((m) => m.RegisterPage),
@@ -34,7 +37,7 @@ export const routes: Routes = [
   {
     path: 'requests/create',
     canActivate: [authGuard],
-    data: { roles: [Role.Advisor] },
+    data: { roles: [Role.Advisor, Role.Student] },
     providers: [
       ...REQUESTS_SUPPORTS_PROVIDERS,
       ...ACADEMIC_PROGRAMS_PROVIDERS,

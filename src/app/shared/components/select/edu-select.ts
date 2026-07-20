@@ -18,5 +18,6 @@ export class EduSelect<T> {
   readonly options = input.required<EduSelectOption<T>[]>();
   readonly value = input<T | null>(null);
   readonly placeholder = input('Todos');
+  readonly errorMessage = input<string | null>(null);
   readonly valueChange = output<T | null>();
 }

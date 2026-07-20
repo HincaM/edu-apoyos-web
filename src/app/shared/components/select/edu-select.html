@@ -14,4 +14,7 @@
       }
     </mat-select>
   </mat-form-field>
+  @if (errorMessage()) {
+    <p class="field-error mt-n2 mb-0">{{ errorMessage() }}</p>
+  }
 </div>

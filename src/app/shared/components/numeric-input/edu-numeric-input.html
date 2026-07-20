@@ -1,0 +1,19 @@
+<div class="edu-input">
+  @if (label()) {
+    <label class="edu-input-label">{{ label() }}</label>
+  }
+  <mat-form-field class="edu-input-field" appearance="outline" subscriptSizing="dynamic">
+    <input
+      matInput
+      type="number"
+      [attr.min]="min()"
+      [attr.step]="step()"
+      [placeholder]="placeholder()"
+      [value]="value()"
+      (input)="valueChange.emit($any($event.target).value)"
+    />
+  </mat-form-field>
+  @if (errorMessage()) {
+    <p class="field-error mt-1 mb-0">{{ errorMessage() }}</p>
+  }
+</div>

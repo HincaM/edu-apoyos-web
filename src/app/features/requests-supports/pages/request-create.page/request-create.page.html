@@ -14,10 +14,8 @@
         [options]="studentOptions()"
         [value]="studentId()"
         (valueChange)="studentId.set($event)"
+        [errorMessage]="touched() && studentId() === null ? 'Selecciona un estudiante' : null"
       />
-      @if (touched() && studentId() === null) {
-        <p class="field-error mt-n2 mb-0">Selecciona un estudiante</p>
-      }
 
       <edu-select
         label="Tipo de apoyo"
@@ -25,41 +23,29 @@
         [options]="typeSupportOptions"
         [value]="typeSupport()"
         (valueChange)="typeSupport.set($event)"
+        [errorMessage]="touched() && typeSupport() === null ? 'Selecciona un tipo de apoyo' : null"
       />
-      @if (touched() && typeSupport() === null) {
-        <p class="field-error mt-n2 mb-0">Selecciona un tipo de apoyo</p>
-      }
 
-      @if (!isStudent) {
+      @if (isStudent) {
         <edu-select
           label="Asesor"
           placeholder="Selecciona un asesor"
           [options]="advisorOptions()"
           [value]="advisorId()"
           (valueChange)="advisorId.set($event)"
+          [errorMessage]="touched() && advisorId() === null ? 'Selecciona un asesor' : null"
         />
-        @if (touched() && advisorId() === null) {
-          <p class="field-error mt-n2 mb-0">Selecciona un asesor</p>
-        }
       }
 
-      <div class="edu-input">
-        <label class="edu-input-label">Monto solicitado</label>
-        <mat-form-field class="edu-input-field" appearance="outline" subscriptSizing="dynamic">
-          <input
-            matInput
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="0.00"
-            [value]="requestedAmount()"
-            (input)="requestedAmount.set($any($event.target).value)"
-          />
-        </mat-form-field>
-        @if (touched() && !amountValid()) {
-          <p class="field-error mt-1 mb-0">Ingresa un monto mayor a cero</p>
-        }
-      </div>
+      <edu-numeric-input
+        label="Monto solicitado"
+        placeholder="0.00"
+        [min]="0"
+        [step]="0.01"
+        [value]="requestedAmount()"
+        (valueChange)="requestedAmount.set($event)"
+        [errorMessage]="touched() && !amountValid() ? 'Ingresa un monto mayor a cero' : null"
+      />
 
       <div class="edu-input">
         <label class="edu-input-label">Descripción</label>

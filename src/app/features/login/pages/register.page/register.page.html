@@ -21,10 +21,12 @@
           [options]="documentTypeOptions"
           [value]="documentType()"
           (valueChange)="documentType.set($event)"
+          [errorMessage]="
+            studentFieldsTouched() && documentType() === null
+              ? 'Selecciona un tipo de documento'
+              : null
+          "
         />
-        @if (studentFieldsTouched() && documentType() === null) {
-          <p class="field-error mt-n2 mb-0">Selecciona un tipo de documento</p>
-        }
 
         <div class="edu-input">
           <label class="edu-input-label">Número de documento</label>
@@ -48,28 +50,24 @@
           [options]="academicProgramOptions()"
           [value]="academicProgramId()"
           (valueChange)="academicProgramId.set($event)"
+          [errorMessage]="
+            studentFieldsTouched() && academicProgramId() === null
+              ? 'Selecciona un programa académico'
+              : null
+          "
         />
-        @if (studentFieldsTouched() && academicProgramId() === null) {
-          <p class="field-error mt-n2 mb-0">Selecciona un programa académico</p>
-        }
 
-        <div class="edu-input">
-          <label class="edu-input-label">Semestre</label>
-          <mat-form-field class="edu-input-field" appearance="outline" subscriptSizing="dynamic">
-            <input
-              matInput
-              type="number"
-              min="1"
-              step="1"
-              placeholder="Semestre"
-              [value]="semester()"
-              (input)="semester.set($any($event.target).value)"
-            />
-          </mat-form-field>
-          @if (studentFieldsTouched() && !semesterValid()) {
-            <p class="field-error mt-1 mb-0">Ingresa un semestre válido</p>
-          }
-        </div>
+        <edu-numeric-input
+          label="Semestre"
+          placeholder="Semestre"
+          [min]="1"
+          [step]="1"
+          [value]="semester()"
+          (valueChange)="semester.set($event)"
+          [errorMessage]="
+            studentFieldsTouched() && !semesterValid() ? 'Ingresa un semestre válido' : null
+          "
+        />
       }
 
       <edu-input label="Nombre completo" type="text" icon="person" placeholder="Nombre y apellido"
