@@ -34,4 +34,46 @@ Para reiniciar con la base de datos limpia (borra el volumen `sqlserver-data`):
 docker compose down -v
 docker compose up --build
 
+## Datos para probar
+
+**Asesor:** usuario: laura.gomez@eduapoyos.com | contraseña: Advisor123*
+**Estudiante:** usuario: pablo.villamil@micorreo.com | contraseña: Estudent123*
+
+
+
+## Scripts
+
+with requetChanges as (
+	select 
+		rs.*,
+		ROW_NUMBER() over (partition by rs.Id order by rs.ApplicationDate desc) as rowId
+	from RequestSupport rs
+	left join StatusHistory sh
+		on rs.Id = sh.RequestSupportId
+	where rs.Status = 0
+)
+select 
+	Id, 
+	StudentId, 
+	RequestedAmount, 
+	Description, 
+	Status, 
+	ApplicationDate, 
+	DateUpdated, 
+	AdvisorId 
+from requetChanges 
+where rowId = 1 and ApplicationDate < DATEADD(day, -5, GETDATE());
+
+select Status, TypeSupport, count(*) Quantity
+from RequestSupport
+where ApplicationDate >= DATEADD(day, -30, GETDATE())
+group by Status, TypeSupport;
+
+**Indice:** create nonclustered index i_supportRequest_applicationDate on RequestSupport(ApplicationDate Desc);
+Agiliza la busqueda de solicitudes por fecha evitando recorrer toda la tabla
+
+
+
+
+
 
