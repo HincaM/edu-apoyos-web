@@ -65,4 +65,8 @@ export class RequestsSupportsImplService implements RequestsSupportsService {
       observation: command.observation,
     });
   }
+
+  downloadConstancy(id: number): Observable<Blob> {
+    return this.http.get(`requests/${id}/download`, { responseType: 'blob' });
+  }
 }

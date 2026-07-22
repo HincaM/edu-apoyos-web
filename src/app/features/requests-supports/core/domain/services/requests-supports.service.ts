@@ -78,4 +78,5 @@ export abstract class RequestsSupportsService {
   abstract getRequestById(id: number): Observable<RequestSupportDto>;
   abstract createRequest(command: CreateRequestCommand): Observable<number>;
   abstract changeStatus(command: ChangeStatusRequestCommand): Observable<boolean>;
+  abstract downloadConstancy(id: number): Observable<Blob>;
 }

@@ -15,6 +15,7 @@ import {
 } from '../../../../shared/components/change-status-dialog/edu-change-status-dialog';
 import { GetRequestByIdUseCase } from '../../core/application/use-cases/get-request-by-id.use-case';
 import { ChangeStatusRequestUseCase } from '../../core/application/use-cases/change-status-request.use-case';
+import { DownloadConstancyUseCase } from '../../core/application/use-cases/download-constancy.use-case';
 import { RequestSupportDto, Status } from '../../core/domain/services/requests-supports.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { ErrorHelperService } from '../../../../core/services/error-helper.service';
@@ -32,7 +33,7 @@ import { ROLE_CLAIM_VALUES, Role } from '../../../login/core/domain/services/aut
     MatChipsModule,
     MatIconModule,
     MatProgressSpinnerModule,
-  ],
+],
   templateUrl: './request-detail.page.html',
   styleUrl: './request-detail.page.scss',
 })
@@ -41,6 +42,7 @@ export class RequestDetailPage implements OnInit {
   private readonly router = inject(Router);
   private readonly getRequestByIdUseCase = inject(GetRequestByIdUseCase);
   private readonly changeStatusRequestUseCase = inject(ChangeStatusRequestUseCase);
+  private readonly downloadConstancyUseCase = inject(DownloadConstancyUseCase);
   private readonly toast = inject(ToastService);
   private readonly errorHelper = inject(ErrorHelperService);
   private readonly authToken = inject(AuthTokenService);
@@ -89,6 +91,26 @@ export class RequestDetailPage implements OnInit {
         this.changeStatus(current, result.status, result.observation);
       }
     });
+  }
+
+  
+  protected async downloadConstancy(): Promise<void> {
+    const current = this.request();
+    if (!current) {
+      return;
+    }
+
+    try {
+      const blob = await firstValueFrom(this.downloadConstancyUseCase.execute(current.id));
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `constancia-${current.id}.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      this.toast.error(this.errorHelper.extractErrorMessage(err, 'No se pudo descargar la constancia'));
+    }
   }
 
   private async changeStatus(

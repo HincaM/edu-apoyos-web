@@ -6,6 +6,7 @@ import { GetStudentRequestsUseCase } from "./core/application/use-cases/get-stud
 import { CreateRequestUseCase } from "./core/application/use-cases/create-request.use-case";
 import { ChangeStatusRequestUseCase } from "./core/application/use-cases/change-status-request.use-case";
 import { GetRequestByIdUseCase } from "./core/application/use-cases/get-request-by-id.use-case";
+import { DownloadConstancyUseCase } from "./core/application/use-cases/download-constancy.use-case";
 
 export const REQUESTS_SUPPORTS_PROVIDERS: Provider[] = [
   { provide: RequestsSupportsService, useClass: RequestsSupportsImplService },
@@ -14,4 +15,5 @@ export const REQUESTS_SUPPORTS_PROVIDERS: Provider[] = [
   CreateRequestUseCase,
   ChangeStatusRequestUseCase,
   GetRequestByIdUseCase,
+  DownloadConstancyUseCase
 ];
